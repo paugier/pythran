@@ -58,7 +58,7 @@ namespace types
     {
     }
 
-    template <class Argp> // ! using the default one, to make it possible to
+    template <class Argp> // not using the default one, to make it possible to
     // accept reference && non reference version of
     // Argp
     numpy_iexpr(numpy_iexpr<Argp> const &other);
@@ -70,7 +70,9 @@ namespace types
 
     template <class E>
     numpy_iexpr &operator=(E const &expr);
-    numpy_iexpr &operator=(numpy_iexpr const &expr);
+    numpy_iexpr &operator=(numpy_iexpr<Arg> const &expr);
+    template <class Argp>
+    numpy_iexpr &operator=(numpy_iexpr<Argp> const &expr);
 
     template <class Op, class E>
     numpy_iexpr &update_(E const &expr);

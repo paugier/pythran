@@ -74,11 +74,33 @@ namespace types
   template <class Arg>
   numpy_iexpr<Arg> &numpy_iexpr<Arg>::operator=(numpy_iexpr<Arg> const &expr)
   {
-    assert(buffer);
+    // happens when rhs is the result of a __combined
+    if (!buffer) {
+      buffer = expr.buffer;
+      _shape = expr._shape;
+      return *this;
+    }
     return utils::broadcast_copy < numpy_iexpr &, numpy_iexpr const &, value,
            value - utils::dim_of<numpy_iexpr>::value,
            is_vectorizable && numpy_iexpr<Arg>::is_vectorizable &&
                std::is_same<dtype, typename numpy_iexpr<Arg>::dtype>::value >
+                   (*this, expr);
+  }
+
+  template <class Arg>
+  template <class Argp>
+  numpy_iexpr<Arg> &numpy_iexpr<Arg>::operator=(numpy_iexpr<Argp> const &expr)
+  {
+    // happens when rhs is the result of a __combined
+    if (!buffer) {
+      buffer = expr.buffer;
+      _shape = expr._shape;
+      return *this;
+    }
+    return utils::broadcast_copy < numpy_iexpr &, numpy_iexpr const &, value,
+           value - utils::dim_of<numpy_iexpr>::value,
+           is_vectorizable && numpy_iexpr<Argp>::is_vectorizable &&
+               std::is_same<dtype, typename numpy_iexpr<Argp>::dtype>::value >
                    (*this, expr);
   }
 
